@@ -1,13 +1,18 @@
 import axios from "axios";
-import { constants } from "./constants";
 
-const axiosInstance = axios.create({
-    // Todo: Remove the hardcoded URL
-    baseURL: `${process.env.REACT_APP_API_URL ?? constants.REACT_APP_API_URL}/${process.env.REACT_APP_API_PATH ?? constants.REACT_APP_API_PATH}`
+const axiosClient = axios.create({
+  baseURL: `${process.env.REACT_APP_API_URL}/${process.env.REACT_APP_API_PATH}`, // Backend URL from environment variable
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-if (localStorage.token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
-}
+axiosClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token && config.headers) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-export default axiosInstance;
+export default axiosClient;

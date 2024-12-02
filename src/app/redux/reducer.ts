@@ -10,6 +10,7 @@ const initialState: AuthState = {
   username: storedUserName ? storedUserName : null,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const authReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case "LOGIN_SUCCESS":

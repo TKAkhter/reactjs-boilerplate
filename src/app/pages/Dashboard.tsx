@@ -12,7 +12,7 @@ const Dashboard: React.FC = () => {
       <div className="container mx-auto p-4">
         <FileUpload />
         <div className="my-10">
-        <div className="divider"></div>
+          <div className="divider"></div>
           <FileList />
         </div>
       </div>

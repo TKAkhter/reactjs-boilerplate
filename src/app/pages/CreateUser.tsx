@@ -18,21 +18,21 @@ const CreateUser: React.FC = () => {
 
   const handleCreateUser = async () => {
     try {
-      const response = await axiosInstance.post(`/auth/register`, {
+      await axiosInstance.post("/auth/register", {
         username,
         password,
       });
-      const { data } = await axiosInstance.post(`/auth/login`, {
+      const { data } = await axiosInstance.post("/auth/login", {
         username,
         password,
       });
-      const token = data.token;
-      const decoded: JwtUserPayload = jwtDecode(token);
+      const { newToken } = data;
+      const decoded: JwtUserPayload = jwtDecode(newToken);
 
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: {
-          token: token,
+          newToken,
           username: decoded.username,
           userId: decoded.userId,
         },

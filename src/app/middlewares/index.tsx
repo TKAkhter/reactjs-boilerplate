@@ -1,23 +1,24 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+// Import { useDispatch, useSelector } from "react-redux";
+// Import { useHistory } from "react-router-dom";
 import { AuthMiddlewareProps, StoreRootState } from "../types";
-import { jwtDecode } from "jwt-decode";
+// Import { jwtDecode } from "jwt-decode";
 
 const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({ children }) => {
   const token = useSelector((state: StoreRootState) => state.user.token);
   console.log("🚀 ~ token:", token);
-  const history = useHistory();
-  // const decodedToken = jwtDecode(token as string);
-  const currentTime = Date.now() / 1000;
-  const dispatch = useDispatch();
-  
+  // Const history = useHistory();
+  // Const decodedToken = jwtDecode(token as string);
+  // Const currentTime = Date.now() / 1000;
+  // Const dispatch = useDispatch();
+
   // React.useEffect(() => {
-  //   if (!token || decodedToken.exp! < currentTime) {
-  //     dispatch({
-  //       type: "CLEAR_TOKEN",
+  //   If (!token || decodedToken.exp! < currentTime) {
+  //     Dispatch({
+  //       Type: "CLEAR_TOKEN",
   //     });
-  //     history.push("/login");
+  //     History.push("/login");
   //   }
   // }, [token, history]);
 

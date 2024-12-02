@@ -1,11 +1,12 @@
+import React from "react";
 import { ToastContainer, Bounce } from "react-toastify";
 
 export const ToastNotifier = () => (
   <ToastContainer
-    position="bottom-left"
+    position="top-right"
     autoClose={5000}
     hideProgressBar={false}
-    newestOnTop={false}
+    newestOnTop
     closeOnClick
     rtl={false}
     pauseOnFocusLoss

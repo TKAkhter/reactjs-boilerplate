@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { LoadingAnimation } from "./LoadingAnimation";
 import axiosInstance from "../common/axios";
@@ -11,15 +10,13 @@ const FileUpload: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const history = useHistory();
   const dispatch = useDispatch();
 
-  
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
-      'application/*': ['.pdf', '.doc', '.docx', '.xls', '.xlsx'],
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif'],
-      'video/*': ['.mp4', '.mkv', '.avi']
+      "application/*": [".pdf", ".doc", ".docx", ".xls", ".xlsx"],
+      "image/*": [".jpeg", ".jpg", ".png", ".gif"],
+      "video/*": [".mp4", ".mkv", ".avi"],
     },
     onDrop: (acceptedFiles) => {
       setUploadedFiles(acceptedFiles);
@@ -27,7 +24,7 @@ const FileUpload: React.FC = () => {
   });
 
   const handleTagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    const { value } = event.target;
     setTags(value.split(","));
   };
 
@@ -39,7 +36,8 @@ const FileUpload: React.FC = () => {
           const formData = new FormData();
           formData.append("file", file);
           formData.append("tags", tags.join(","));
-          await axiosInstance.put(`/files/1b27b4b0-2895-4134-8de0-2916304d77a6`, formData);
+          // eslint-disable-next-line no-await-in-loop
+          await axiosInstance.put("/files/1b27b4b0-2895-4134-8de0-2916304d77a6", formData);
         }
         toast.success("File Uploaded Successfully.");
         dispatch(setFileUploaded());
@@ -54,7 +52,7 @@ const FileUpload: React.FC = () => {
 
   return (
     <div className="grid mx-auto">
-      <h2 className='text-xl my-3'>File Upload:</h2>
+      <h2 className="text-xl my-3">File Upload:</h2>
       <div {...getRootProps()} className="border-dashed border-2 border-gray-400 p-20">
         <input className="file-input file-input-bordered w-full max-w-xs" {...getInputProps()} />
         <p>Drag & drop some files here, or click to select file(s)</p>
@@ -63,7 +61,9 @@ const FileUpload: React.FC = () => {
         <div>
           <h2 className="pt-4">Uploaded Files:</h2>
           {uploadedFiles.map((file, index) => (
-            <div className="pt-2" key={index}>{file.name}</div>
+            <div className="pt-2" key={index}>
+              {file.name}
+            </div>
           ))}
         </div>
       )}

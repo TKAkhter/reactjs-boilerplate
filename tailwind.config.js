@@ -20,21 +20,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss"),
-    require("autoprefixer"),
-    require("@tailwindcss/forms"),
-    require("@tailwindcss/typography"),
-    require('daisyui'),
-  ],
-  daisyui: {
-    themes: false,
-    darkTheme: "dark",
-    base: true,
-    styled: true,
-    utils: true,
-    prefix: "",
-    logs: true,
-    themeRoot: ":root",
-  },
+  plugins: [],
 };

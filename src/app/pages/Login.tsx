@@ -10,7 +10,7 @@ import { ToastNotifier } from "../components/ToastNotifier";
 import { toast } from "react-toastify";
 import { LoadingAnimation } from "../components/LoadingAnimation";
 import axiosInstance from "../common/axios";
-import { resetFileUploaded } from "../redux/slice";
+// Import { resetFileUploaded } from "../redux/slice";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,17 +24,17 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.post(`/auth/login`, {
+      const response = await axiosInstance.post("/auth/login", {
         username,
         password,
       });
-      const token = response.data.token;
-      const decoded: JwtUserPayload = jwtDecode(token);
+      const { newToken } = response.data;
+      const decoded: JwtUserPayload = jwtDecode(newToken);
 
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: {
-          token: token,
+          newToken,
           username: decoded.username,
           userId: decoded.userId,
         },
@@ -98,9 +98,9 @@ const Login: React.FC = () => {
                       <a href="!#">Forgot password?</a>
 
                       <div className="flex items-center justify-between pb-6">
-                        <p className="mb-0 mr-2">Don't have an account?</p>
+                        <p className="mb-0 mr-2">Dont have an account?</p>
                         <button
-                          onClick={() => history.push("/create-user")}
+                          onClick={() => history.push("/register")}
                           type="button"
                           className="inline-block rounded border-2 border-danger px-6 pb-[6px] pt-2 text-xs font-medium uppercase leading-normal text-danger transition duration-150 ease-in-out hover:border-danger-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-danger-600 focus:border-danger-600 focus:text-danger-600 focus:outline-none focus:ring-0 active:border-danger-700 active:text-danger-700 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
                         >

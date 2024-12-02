@@ -1,3 +1,4 @@
+import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Logo from "../assets/logo.png";
@@ -19,7 +20,9 @@ const NavBar = () => {
         <img className="w-[150px]" src={Logo} alt="Banner" />
       </div>
       <div className="flex gap-3">
-        <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
+        <button className="btn btn-primary" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </header>
   );
