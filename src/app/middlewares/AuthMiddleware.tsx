@@ -11,7 +11,6 @@ export const AuthMiddleware: React.FC<React.ReactNode> = ({ children }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("🚀 ~ token auth:", token);
     const decodedToken = token ? jwtDecode(token) : {};
     const currentTime = Date.now() / 1000;
     if (!token || decodedToken.exp! < currentTime) {
@@ -19,7 +18,7 @@ export const AuthMiddleware: React.FC<React.ReactNode> = ({ children }) => {
       dispatch(remove());
       history.push("/login");
     }
-  }, [token, history]);
+  }, [token, history, dispatch]);
 
   return <>{children}</>;
 };

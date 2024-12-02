@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../common/axios";
 
-const FileView: React.FC = () => {
+export const FileView: React.FC = () => {
   const { imageName } = useParams<{ imageName: string }>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [imageDetails, setImageDetails] = useState<any>(null);
@@ -85,5 +85,3 @@ const FileView: React.FC = () => {
     </div>
   );
 };
-
-export default FileView;

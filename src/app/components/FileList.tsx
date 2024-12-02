@@ -21,8 +21,6 @@ const FileList: React.FC = () => {
   const [error, setError] = useState<string>("");
   const dispatch = useDispatch();
   const isFileUploaded = useSelector((state: RootState) => state.file.isFileUploaded);
-  const isFileUploadedasd = useSelector((state: RootState) => state);
-  console.log("🚀 ~ isFileUploadedasd:", isFileUploadedasd);
 
   useEffect(() => {
     const fetchFiles = async () => {

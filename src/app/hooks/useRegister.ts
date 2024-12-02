@@ -1,63 +1,52 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import * as yup from "yup";
+import { useState } from "react";
 import axiosClient from "../common/axios";
+import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/authSlice";
-import { JwtUserPayload } from "../types/types";
-import { jwtDecode } from "jwt-decode";
 import { save } from "../redux/slices/userSlice";
+import { useHistory } from "react-router-dom";
 
-const schema = yup.object().shape({
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  username: yup.string().required(),
-  password: yup.string().min(6).required(),
-});
-
-interface LoginForm {
+export interface RegisterFormValues {
   name: string;
-  email: string;
   username: string;
+  email: string;
   password: string;
+  confirmPassword: string;
 }
 
-export const useRegister = () => {
+const useRegister = () => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginForm>({
-    resolver: yupResolver(schema),
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const onSubmit = async (submitData: LoginForm) => {
+  const register = async (payload: RegisterFormValues) => {
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
     try {
-      const { data } = await axiosClient.post("/auth/login", submitData);
-      const decoded: JwtUserPayload = jwtDecode(data.token);
+      const { data } = await axiosClient.post("/auth/register", payload);
+      setSuccessMessage(data.message || "Registration successful!");
       dispatch(login(data.token));
       dispatch(
         save({
-          email: decoded.email,
-          id: decoded.id,
-          username: decoded.username,
-          name: decoded.name,
+          email: data.email,
+          id: data.id,
+          username: data.username,
+          name: data.name,
         }),
       );
       history.push("/dashboard");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error(error.message || "Login failed");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "An error occurred during registration.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return {
-    register,
-    handleSubmit,
-    onSubmit,
-    errors,
-  };
+  return { register, isLoading, error, successMessage };
 };
+
+export default useRegister;

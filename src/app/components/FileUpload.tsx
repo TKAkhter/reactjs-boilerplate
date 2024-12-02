@@ -51,7 +51,7 @@ const FileUpload: React.FC = () => {
   };
 
   return (
-    <div className="grid mx-auto">
+    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark p-10">
       <h2 className="text-xl my-3">File Upload:</h2>
       <div {...getRootProps()} className="border-dashed border-2 border-gray-400 p-20">
         <input className="file-input file-input-bordered w-full max-w-xs" {...getInputProps()} />
@@ -70,14 +70,20 @@ const FileUpload: React.FC = () => {
       <div>
         <label className="input input-bordered flex items-center gap-2 my-8 justify-between">
           <input
-            className="w-100 flex-1"
-            type="grow"
+            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            type="text"
             placeholder="Tags (comma separated)"
             onChange={handleTagChange}
           />
-          <span className="badge badge-info">Optional</span>
+          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+            optional
+          </span>
         </label>
-        <button className="btn btn-md" onClick={handleUpload} disabled={isUploading}>
+        <button
+          className="block cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+          onClick={handleUpload}
+          disabled={isUploading}
+        >
           Upload Files
           {isUploading && <LoadingAnimation />}
         </button>
