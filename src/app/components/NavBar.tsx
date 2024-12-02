@@ -2,15 +2,16 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import Logo from "../assets/logo.png";
+import { logout } from "../redux/slices/authSlice";
+import { remove } from "../redux/slices/userSlice";
 
 const NavBar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const handleLogout = () => {
-    dispatch({
-      type: "CLEAR_TOKEN",
-    });
+    dispatch(logout());
+    dispatch(remove());
     history.push("/login");
   };
 

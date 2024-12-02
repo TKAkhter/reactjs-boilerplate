@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { LoadingAnimation } from "./LoadingAnimation";
 import axiosInstance from "../common/axios";
 import { useDispatch } from "react-redux";
-import { setFileUploaded } from "../redux/slice";
+import { setFileUploaded } from "../redux/slices/fileSlice";
 
 const FileUpload: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);

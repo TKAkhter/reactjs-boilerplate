@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { FileState } from "../types";
 
-export const initialState: FileState = {
+interface FileState {
+  isFileUploaded: boolean;
+}
+
+const initialState: FileState = {
   isFileUploaded: false,
 };
 

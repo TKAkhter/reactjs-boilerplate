@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosInstance from "../common/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { StoreRootState } from "../types";
-import { resetFileUploaded } from "../redux/slice";
+import { resetFileUploaded } from "../redux/slices/fileSlice";
+import { RootState } from "../redux/store";
 
 interface File {
   _id: string;
@@ -20,13 +20,14 @@ const FileList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const dispatch = useDispatch();
-  const isFileUploaded = useSelector((state: StoreRootState) => state.file.isFileUploaded);
+  const isFileUploaded = useSelector((state: RootState) => state.file.isFileUploaded);
+  const isFileUploadedasd = useSelector((state: RootState) => state);
+  console.log("🚀 ~ isFileUploadedasd:", isFileUploadedasd);
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
         const response = await axiosInstance.get("/files");
-        console.log("🚀 ~ fetchFiles ~ response:", response.data);
         if (response.data && response.data.length > 0) {
           setFiles(response.data);
         }

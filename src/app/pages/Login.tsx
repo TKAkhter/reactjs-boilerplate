@@ -1,62 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { JwtUserPayload, StoreRootState } from "../types";
-import { useHistory } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import React from "react";
 import BannerDark from "../assets/banner-dark.png";
 import Logo from "../assets/logo.png";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastNotifier } from "../components/ToastNotifier";
-import { toast } from "react-toastify";
-import { LoadingAnimation } from "../components/LoadingAnimation";
-import axiosInstance from "../common/axios";
-// Import { resetFileUploaded } from "../redux/slice";
+import { useLogin } from "../hooks/useLogin";
+import { useHistory } from "react-router-dom";
 
 const Login: React.FC = () => {
-  const dispatch = useDispatch();
+  const { register, handleSubmit, onSubmit, errors } = useLogin();
   const history = useHistory();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const token = useSelector((state: StoreRootState) => state.user.token);
-
-  const handleLogin = async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.post("/auth/login", {
-        username,
-        password,
-      });
-      const { newToken } = response.data;
-      const decoded: JwtUserPayload = jwtDecode(newToken);
-
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: {
-          newToken,
-          username: decoded.username,
-          userId: decoded.userId,
-        },
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Login failed:", error);
-      toast.error("Login Failed!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (token) {
-      history.push("/dashboard");
-    }
-  }, [token, history]);
 
   return (
     <section className="h-svh bg-neutral-200 dark:bg-neutral-700">
-      <ToastNotifier />
       <div className="container h-full p-10 mx-auto">
         <div className="g-6 flex h-full flex-wrap items-center justify-center text-neutral-800 dark:text-neutral-200">
           <div className="w-full">
@@ -68,35 +21,23 @@ const Login: React.FC = () => {
                       <img className="mx-auto w-48" src={Logo} alt="logo" />
                       <h4 className="mb-12 mt-1 pb-1 text-xl font-semibold">Welcome!</h4>
                     </div>
-                    <form>
-                      <p className="mb-4">Please login to your account</p>
-                      <input
-                        className="block w-full text-black p-3 rounded-md focus:outline-none mb-4"
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                      />
-                      <input
-                        className="block w-full text-black p-3 rounded-md focus:outline-none mb-4"
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
+                    <div className="login-container">
+                      <h1>Login</h1>
+                      <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+                        <div>
+                          <label>Email:</label>
+                          <input {...register("email")} placeholder="Email" />
+                          {errors.email && <p className="error">{errors.email.message}</p>}
+                        </div>
 
-                      <div className="mb-12 pb-1 pt-1 flex justify-between">
-                        <button
-                          onClick={handleLogin}
-                          className="mb-3 inline-block rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white bg-gray-500 hover:bg-gray-700"
-                          type="button"
-                        >
-                          Log in
-                        </button>
-                        {loading ? <LoadingAnimation /> : null}
-                      </div>
-                      <a href="!#">Forgot password?</a>
+                        <div>
+                          <label>Password:</label>
+                          <input {...register("password")} type="password" placeholder="Password" />
+                          {errors.password && <p className="error">{errors.password.message}</p>}
+                        </div>
 
+                        <button type="submit">Login</button>
+                      </form>
                       <div className="flex items-center justify-between pb-6">
                         <p className="mb-0 mr-2">Dont have an account?</p>
                         <button
@@ -107,7 +48,7 @@ const Login: React.FC = () => {
                           Register
                         </button>
                       </div>
-                    </form>
+                    </div>
                   </div>
                 </div>
 

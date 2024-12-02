@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import { JwtUserPayload, StoreRootState } from "../types";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import BannerDark from "../assets/banner-dark.png";
@@ -8,35 +6,32 @@ import Logo from "../assets/logo.png";
 import { ToastNotifier } from "../components/ToastNotifier";
 import { toast } from "react-toastify";
 import axiosInstance from "../common/axios";
+import { RootState } from "../redux/store";
+import { login } from "../redux/slices/authSlice";
+import { save } from "../redux/slices/userSlice";
 
 const CreateUser: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const token = useSelector((state: StoreRootState) => state.user.token);
+  const token = useSelector((state: RootState) => state.auth.token);
   const dispatch = useDispatch();
   const history = useHistory();
 
   const handleCreateUser = async () => {
     try {
-      await axiosInstance.post("/auth/register", {
+      const { data } = await axiosInstance.post("/auth/register", {
         username,
         password,
       });
-      const { data } = await axiosInstance.post("/auth/login", {
-        username,
-        password,
-      });
-      const { newToken } = data;
-      const decoded: JwtUserPayload = jwtDecode(newToken);
-
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: {
-          newToken,
-          username: decoded.username,
-          userId: decoded.userId,
-        },
-      });
+      dispatch(login(data.token));
+      dispatch(
+        save({
+          email: data.email,
+          id: data.id,
+          username: data.username,
+          name: data.name,
+        }),
+      );
     } catch (error) {
       console.error("User creation failed:", error);
       toast.error("Account Creation Failed!");
