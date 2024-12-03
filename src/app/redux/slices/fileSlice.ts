@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import logger from "../../common/pino";
 
 interface FileState {
   isFileUploaded: boolean;
@@ -13,9 +14,11 @@ const fileSlice = createSlice({
   initialState,
   reducers: {
     setFileUploaded: (state) => {
+      logger.info("Dispatching setFileUploaded action with payload:", state);
       state.isFileUploaded = true;
     },
     resetFileUploaded: (state) => {
+      logger.info("Dispatching resetFileUploaded action with payload:", state);
       state.isFileUploaded = false;
     },
   },

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import axiosInstance from "../common/axios";
+import { axiosClient } from "../../common/axios";
 import { useDispatch, useSelector } from "react-redux";
-import { resetFileUploaded } from "../redux/slices/fileSlice";
-import { RootState } from "../redux/store";
+import { resetFileUploaded } from "../../redux/slices/fileSlice";
+import { RootState } from "../../redux/store";
 
 interface File {
   _id: string;
@@ -25,7 +25,7 @@ const FileList: React.FC = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axiosInstance.get("/files");
+        const response = await axiosClient.get("/files");
         if (response.data && response.data.length > 0) {
           setFiles(response.data);
         }
@@ -46,16 +46,16 @@ const FileList: React.FC = () => {
   }, [isFileUploaded, dispatch]);
 
   if (loading) {
-    return <h2 className="text-xl">Loading files...</h2>;
+    return <h2 className="text-xl text-black dark:text-white">Loading files...</h2>;
   }
   if (error) {
-    return <h2 className="text-xl">{error}</h2>;
+    return <h2 className="text-xl text-black dark:text-white">{error}</h2>;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleShare = async (e: any) => {
     try {
-      const response = await axiosInstance.post(`/files/share/${e.target.value}`);
+      const response = await axiosClient.post(`/files/share/${e.target.value}`);
       const { shareableLink } = response.data;
 
       await navigator.clipboard.writeText(shareableLink);
@@ -68,7 +68,7 @@ const FileList: React.FC = () => {
 
   return (
     <div className="my-4">
-      <h2 className="text-xl">File List:</h2>
+      <h2 className="text-xl text-black dark:text-white">File List:</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 my-10">
         {files.map((file) => (
           <div key={file.fileName}>

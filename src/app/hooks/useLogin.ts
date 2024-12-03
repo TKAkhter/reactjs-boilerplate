@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 import * as yup from "yup";
-import axiosClient from "../common/axios";
+import { axiosClient } from "../common/axios";
 import { login } from "../redux/slices/authSlice";
 import { JwtUserPayload } from "../types/types";
 import { jwtDecode } from "jwt-decode";
 import { save } from "../redux/slices/userSlice";
+import { toast } from "react-toastify";
+import { addDelay, handleToastError } from "../utils/utils";
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -21,7 +22,6 @@ interface LoginForm {
 
 export const useLogin = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const {
     register,
     handleSubmit,
@@ -43,10 +43,14 @@ export const useLogin = () => {
           name: decoded.name,
         }),
       );
-      history.push("/dashboard");
+      toast.success("Login successful!");
+      await addDelay(500);
+      window.location.reload();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error(error.message || "Login failed");
+      await addDelay(500);
+      console.error(error.message);
+      handleToastError(error);
     }
   };
 

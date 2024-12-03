@@ -23,7 +23,7 @@ const authSlice = createSlice({
       setTokenCookie(action.payload);
     },
     logout: (state) => {
-      logger.info("Dispatching login action with payload:", state);
+      logger.info("Dispatching login action with state:", state);
       state.token = null;
       state.isAuthenticated = false;
       removeTokenCookie();

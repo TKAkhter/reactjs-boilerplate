@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import axiosInstance from "../common/axios";
+import { axiosClient } from "../../common/axios";
 
 export const FileView: React.FC = () => {
   const { imageName } = useParams<{ imageName: string }>();
@@ -12,7 +12,7 @@ export const FileView: React.FC = () => {
   useEffect(() => {
     const fetchImageDetails = async () => {
       try {
-        const response = await axiosInstance.get(`/files/${imageName}`);
+        const response = await axiosClient.get(`/files/${imageName}`);
         setImageDetails(response.data);
         setLoading(false);
       } catch (error) {
@@ -33,7 +33,7 @@ export const FileView: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleShare = async (e: any) => {
     try {
-      const response = await axiosInstance.post(`/files/share/${e.target.value}`);
+      const response = await axiosClient.post(`/files/share/${e.target.value}`);
       const { shareableLink } = response.data;
       await navigator.clipboard.writeText(shareableLink);
       toast.success("Link copied to clipboard!");

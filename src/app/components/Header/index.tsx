@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import DropdownUser from "./DropdownUser";
-import Logo from "../../assets/logo.png";
 import DarkModeSwitcher from "./DarkModeSwitcher";
+import { Logo } from "../Logo";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Header = (props: {
@@ -14,7 +14,7 @@ const Header = (props: {
       <div className="flex flex-grow items-center justify-between px-4 py-4 shadow-2 md:px-6 2xl:px-11">
         <div className="flex items-center gap-2 sm:gap-4">
           <Link className="block flex-shrink-0" to="/dashboard">
-            <img src={Logo} alt="Logo" className="w-50" />
+            <Logo />
           </Link>
         </div>
 

@@ -1,6 +1,6 @@
 import React from "react";
-import FileList from "../components/FileList";
-import FileUpload from "../components/FileUpload";
+import FileList from "../components/FileUpload/FileList";
+import FileUpload from "../components/FileUpload/FileUpload";
 import { ToastNotifier } from "../components/ToastNotifier";
 
 export const Dashboard: React.FC = () => {

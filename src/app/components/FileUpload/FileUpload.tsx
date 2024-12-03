@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-toastify";
-import { LoadingAnimation } from "./LoadingAnimation";
-import axiosInstance from "../common/axios";
+import { Loader } from "../Loader";
+import { axiosClient } from "../../common/axios";
 import { useDispatch } from "react-redux";
-import { setFileUploaded } from "../redux/slices/fileSlice";
+import { setFileUploaded } from "../../redux/slices/fileSlice";
+import { UpoloadIcon } from "../Icons/UploadIcon";
 
 const FileUpload: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
@@ -14,9 +15,9 @@ const FileUpload: React.FC = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
-      "application/*": [".pdf", ".doc", ".docx", ".xls", ".xlsx"],
+      // "application/*": [".pdf", ".doc", ".docx", ".xls", ".xlsx"],
       "image/*": [".jpeg", ".jpg", ".png", ".gif"],
-      "video/*": [".mp4", ".mkv", ".avi"],
+      // "video/*": [".mp4", ".mkv", ".avi"],
     },
     onDrop: (acceptedFiles) => {
       setUploadedFiles(acceptedFiles);
@@ -37,7 +38,7 @@ const FileUpload: React.FC = () => {
           formData.append("file", file);
           formData.append("tags", tags.join(","));
           // eslint-disable-next-line no-await-in-loop
-          await axiosInstance.put("/files/1b27b4b0-2895-4134-8de0-2916304d77a6", formData);
+          await axiosClient.post("/files/upload", formData);
         }
         toast.success("File Uploaded Successfully.");
         dispatch(setFileUploaded());
@@ -52,14 +53,27 @@ const FileUpload: React.FC = () => {
 
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark p-10">
-      <h2 className="text-xl my-3">File Upload:</h2>
-      <div {...getRootProps()} className="border-dashed border-2 border-gray-400 p-20">
+      {isUploading ? <Loader /> : null}
+      <h2 className="text-xl my-3 text-black dark:text-white">File Upload:</h2>
+      <div
+        {...getRootProps()}
+        className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-16 px-4 dark:bg-meta-4"
+      >
         <input className="file-input file-input-bordered w-full max-w-xs" {...getInputProps()} />
-        <p>Drag & drop some files here, or click to select file(s)</p>
+        <div className="flex flex-col items-center justify-center space-y-3">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
+            <UpoloadIcon />
+          </span>
+          <p>
+            <span className="text-primary">Click to upload</span> or drag and drop
+          </p>
+          <p className="mt-1.5">JPEG, PNG, JPG or GIF</p>
+          <p>(max file size: 10mb)</p>
+        </div>
       </div>
       {uploadedFiles.length > 0 && (
         <div>
-          <h2 className="pt-4">Uploaded Files:</h2>
+          <h2 className="pt-4 text-black dark:text-white">Uploaded Files:</h2>
           {uploadedFiles.map((file, index) => (
             <div className="pt-2" key={index}>
               {file.name}
@@ -85,7 +99,6 @@ const FileUpload: React.FC = () => {
           disabled={isUploading}
         >
           Upload Files
-          {isUploading && <LoadingAnimation />}
         </button>
       </div>
     </div>
