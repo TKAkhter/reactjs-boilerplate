@@ -8,12 +8,15 @@ export const FileView: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [imageDetails, setImageDetails] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchImageDetails = async () => {
       try {
-        const response = await axiosClient.get(`/files/${imageName}`);
-        setImageDetails(response.data);
+        const response = await axiosClient.get(`/file/${imageName}`);
+        setImageDetails(response.data.data);
+        const imageTags = response.data.data.tags.split(",");
+        setTags(imageTags);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching image details:", error);
@@ -33,7 +36,7 @@ export const FileView: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleShare = async (e: any) => {
     try {
-      const response = await axiosClient.post(`/files/share/${e.target.value}`);
+      const response = await axiosClient.post(`/file/share/${e.target.value}`);
       const { shareableLink } = response.data;
       await navigator.clipboard.writeText(shareableLink);
       toast.success("Link copied to clipboard!");
@@ -49,7 +52,7 @@ export const FileView: React.FC = () => {
           <div className="hero bg-base-200 min-h-screen">
             <div className="hero-content flex-col lg:flex-row">
               <img
-                src={`${process.env.REACT_APP_API_URL}/uploads/${imageDetails.fileName}`}
+                src={`${process.env.REACT_APP_API_URL}/${imageDetails.path}`}
                 alt={imageDetails.fileName}
                 className="max-w-sm rounded-lg shadow-2xl"
               />
@@ -58,7 +61,8 @@ export const FileView: React.FC = () => {
                   Name: <b>{imageDetails.name}</b>
                 </h1>
                 <h2 className="text-xl py-6">Tags:</h2>
-                {imageDetails.tags.map((tag: string) => (
+                {console.log(imageDetails.tags.split(","))}
+                {tags.map((tag: string) => (
                   <span key={tag} className="badge badge-neutral mx-2 px-5 py-4">
                     {tag}
                   </span>

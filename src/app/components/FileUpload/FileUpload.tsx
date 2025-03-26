@@ -38,7 +38,7 @@ const FileUpload: React.FC = () => {
           formData.append("file", file);
           formData.append("tags", tags.join(","));
           // eslint-disable-next-line no-await-in-loop
-          await axiosClient.post("/files/upload", formData);
+          await axiosClient.post("/file/upload", formData);
         }
         toast.success("File Uploaded Successfully.");
         dispatch(setFileUploaded());

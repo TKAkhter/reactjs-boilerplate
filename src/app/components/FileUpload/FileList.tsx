@@ -7,12 +7,15 @@ import { resetFileUploaded } from "../../redux/slices/fileSlice";
 import { RootState } from "../../redux/store";
 
 interface File {
-  _id: string;
+  id: string;
   name: string;
-  fileText: string;
-  tags: string[];
-  fileName: string;
+  text: string;
+  path: string;
+  tags: string;
   createdAt: Date;
+  updatedAt: Date;
+  userId: Date;
+  views: number;
 }
 
 const FileList: React.FC = () => {
@@ -25,9 +28,9 @@ const FileList: React.FC = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axiosClient.get("/files");
-        if (response.data && response.data.length > 0) {
-          setFiles(response.data);
+        const response = await axiosClient.get("/file");
+        if (response.data.data && response.data.data.length > 0) {
+          setFiles(response.data.data);
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_) {
@@ -39,6 +42,7 @@ const FileList: React.FC = () => {
 
     fetchFiles();
 
+    console.log("🚀 ~ useEffect ~ isFileUploaded:", isFileUploaded);
     if (isFileUploaded) {
       fetchFiles();
       dispatch(resetFileUploaded());
@@ -55,7 +59,7 @@ const FileList: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleShare = async (e: any) => {
     try {
-      const response = await axiosClient.post(`/files/share/${e.target.value}`);
+      const response = await axiosClient.post(`/file/share/${e.target.value}`);
       const { shareableLink } = response.data;
 
       await navigator.clipboard.writeText(shareableLink);
@@ -71,11 +75,11 @@ const FileList: React.FC = () => {
       <h2 className="text-xl text-black dark:text-white">File List:</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 my-10">
         {files.map((file) => (
-          <div key={file.fileName}>
-            <Link to={`/file/${file.fileName}`}>
+          <div key={file.name}>
+            <Link to={`/file/${file.id}`}>
               <img
                 className="object-cover object-center w-full h-80 max-w-full rounded-lg"
-                src={file.fileText}
+                src={`${process.env.REACT_APP_API_URL}/${file.path}`}
                 alt={file.name}
               />
             </Link>

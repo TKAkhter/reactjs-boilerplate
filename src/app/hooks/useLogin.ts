@@ -33,8 +33,8 @@ export const useLogin = () => {
   const onSubmit = async (submitData: LoginForm) => {
     try {
       const { data } = await axiosClient.post("/auth/login", submitData);
-      const decoded: JwtUserPayload = jwtDecode(data.token);
-      dispatch(login(data.token));
+      const decoded: JwtUserPayload = jwtDecode(data.data.token);
+      dispatch(login(data.data.token));
       dispatch(
         save({
           email: decoded.email,
