@@ -6,7 +6,11 @@ import { logout } from "../redux/slices/authSlice";
 import { remove } from "../redux/slices/userSlice";
 import { useHistory } from "react-router-dom";
 
-export const AuthMiddleware: React.FC<React.ReactNode> = ({ children }) => {
+interface AuthMiddlewareProps {
+  children: React.ReactNode;
+}
+
+export const AuthMiddleware: React.FC<AuthMiddlewareProps> = ({ children }) => {
   const token = useSelector((state: RootState) => state.auth.token);
   const history = useHistory();
   const dispatch = useDispatch();

@@ -52,7 +52,7 @@ export const FileView: React.FC = () => {
           <div className="hero bg-base-200 min-h-screen">
             <div className="hero-content flex-col lg:flex-row">
               <img
-                src={`${process.env.REACT_APP_API_URL}/${imageDetails.path}`}
+                src={`${import.meta.env.VITE_BACKEND_API_URL}/${imageDetails.path}`}
                 alt={imageDetails.fileName}
                 className="max-w-sm rounded-lg shadow-2xl"
               />
@@ -61,7 +61,6 @@ export const FileView: React.FC = () => {
                   Name: <b>{imageDetails.name}</b>
                 </h1>
                 <h2 className="text-xl py-6">Tags:</h2>
-                {console.log(imageDetails.tags.split(","))}
                 {tags.map((tag: string) => (
                   <span key={tag} className="badge badge-neutral mx-2 px-5 py-4">
                     {tag}

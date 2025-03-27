@@ -1,6 +1,6 @@
 import pino from "pino";
 
-const isLocal = process.env.REACT_APP_ENVIRONMENT !== "production";
+const isLocal = import.meta.env.VITE_APP_ENVIRONMENT !== "production";
 
 const logger = pino({
   level: isLocal ? "info" : "silent",

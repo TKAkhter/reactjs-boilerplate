@@ -19,7 +19,7 @@ const FileUpload: React.FC = () => {
       "image/*": [".jpeg", ".jpg", ".png", ".gif"],
       // "video/*": [".mp4", ".mkv", ".avi"],
     },
-    onDrop: (acceptedFiles) => {
+    onDrop: (acceptedFiles: React.SetStateAction<File[]>) => {
       setUploadedFiles(acceptedFiles);
     },
   });

@@ -2,7 +2,7 @@ import axios from "axios";
 import { getTokenFromCookie } from "./cookie";
 
 export const axiosClient = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL}/${process.env.REACT_APP_API_PATH}`, // Backend URL from environment variable
+  baseURL: `${import.meta.env.VITE_BACKEND_API_URL}/api`, // Backend URL from environment variable
   headers: {
     "Content-Type": "application/json",
   },

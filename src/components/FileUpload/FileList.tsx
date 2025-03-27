@@ -79,7 +79,7 @@ const FileList: React.FC = () => {
             <Link to={`/file/${file.id}`}>
               <img
                 className="object-cover object-center w-full h-80 max-w-full rounded-lg"
-                src={`${process.env.REACT_APP_API_URL}/${file.path}`}
+                src={`${import.meta.env.VITE_BACKEND_API_URL}/${file.path}`}
                 alt={file.name}
               />
             </Link>
