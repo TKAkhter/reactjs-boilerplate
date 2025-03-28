@@ -4,15 +4,15 @@ import { UserFieldIcon } from "../components/Icons/UserFieldIcon";
 import { MailFieldIcon } from "../components/Icons/MailFieldIcon";
 import { BioFieldIcon } from "../components/Icons/BioFieldIcon";
 // Import { UpoloadIcon } from "../components/Icons/UploadIcon";
-import { useSettings } from "../hooks/useSettings";
-import { Loader } from "../components/Loader";
+// Import { useSettings } from "../hooks/useSettings";
+// Import { Loader } from "../components/Loader";
 
 export const Settings: React.FC = () => {
-  const { register, handleSubmit, onSubmit, errors, isLoading, deleteAccount } = useSettings();
+  // Const { register, handleSubmit, onSubmit, errors, isLoading, deleteAccount } = useSettings();
 
   return (
     <div className="mx-auto max-w-270">
-      {isLoading ? <Loader /> : null}
+      {/* {isLoading ? <Loader /> : null} */}
       <div className="grid grid-cols-5 gap-8">
         <div className="col-span-5 xl:col-span-3">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -20,126 +20,126 @@ export const Settings: React.FC = () => {
               <h3 className="font-medium text-black dark:text-white">Personal Information</h3>
             </div>
             <div className="p-7">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                  <div className="w-full sm:w-1/2">
-                    <label
-                      className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="name"
-                    >
-                      Full Name
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-4.5 top-4">
-                        <UserFieldIcon />
-                      </span>
-                      <input
-                        className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        type="text"
-                        id="name"
-                        {...register("name")}
-                        placeholder="John Doe"
-                      />
-                      {errors.name && <p className="error">{errors.name.message}</p>}
-                    </div>
-                  </div>
-
-                  <div className="w-full sm:w-1/2">
-                    <label
-                      className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="phoneNumber"
-                    >
-                      Phone Number
-                    </label>
-                    <input
-                      className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      id="phoneNumber"
-                      {...register("phoneNumber")}
-                      placeholder="+1 123 456 7890"
-                    />
-                    {errors.phoneNumber && <p className="error">{errors.phoneNumber.message}</p>}
-                  </div>
-                </div>
-
-                <div className="mb-5.5">
+              {/* <form onSubmit={handleSubmit(onSubmit)}> */}
+              <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                <div className="w-full sm:w-1/2">
                   <label
                     className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="email"
+                    htmlFor="name"
                   >
-                    Email Address
+                    Full Name
                   </label>
                   <div className="relative">
                     <span className="absolute left-4.5 top-4">
-                      <MailFieldIcon />
+                      <UserFieldIcon />
                     </span>
                     <input
                       className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="email"
-                      {...register("email")}
-                      id="email"
-                      placeholder="johndoe@example.com"
+                      type="text"
+                      id="name"
+                      // {...register("name")}
+                      placeholder="John Doe"
                     />
-                    {errors.email && <p className="error">{errors.email.message}</p>}
+                    {/* {errors.name && <p className="error">{errors.name.message}</p>} */}
                   </div>
                 </div>
 
-                <div className="mb-5.5">
+                <div className="w-full sm:w-1/2">
                   <label
                     className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="username"
+                    htmlFor="phoneNumber"
                   >
-                    Username
+                    Phone Number
                   </label>
                   <input
                     className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                     type="text"
-                    id="username"
-                    {...register("username")}
-                    placeholder="john_doe"
+                    id="phoneNumber"
+                    // {...register("phoneNumber")}
+                    placeholder="+1 123 456 7890"
                   />
-                  {errors.username && <p className="error">{errors.username.message}</p>}
+                  {/* {errors.phoneNumber && <p className="error">{errors.phoneNumber.message}</p>} */}
                 </div>
+              </div>
 
-                <div className="mb-5.5">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="Username"
-                  >
-                    BIO
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4.5 top-4">
-                      <BioFieldIcon />
-                    </span>
-
-                    <textarea
-                      className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      id="bio"
-                      {...register("bio")}
-                      rows={6}
-                      placeholder="Write your bio here"
-                    ></textarea>
-                    {errors.bio && <p className="error">{errors.bio.message}</p>}
-                  </div>
+              <div className="mb-5.5">
+                <label
+                  className="mb-3 block text-sm font-medium text-black dark:text-white"
+                  htmlFor="email"
+                >
+                  Email Address
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4.5 top-4">
+                    <MailFieldIcon />
+                  </span>
+                  <input
+                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                    type="email"
+                    // {...register("email")}
+                    id="email"
+                    placeholder="johndoe@example.com"
+                  />
+                  {/* {errors.email && <p className="error">{errors.email.message}</p>} */}
                 </div>
+              </div>
 
-                <div className="flex justify-between gap-4.5">
-                  <button
-                    className="flex justify-center rounded border bg-red-500 border-stroke py-2 px-6 font-medium text-white hover:shadow-1 dark:border-strokedark"
-                    type="button"
-                    onClick={deleteAccount}
-                  >
-                    Delete Account
-                  </button>
-                  <button
-                    className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
-                    type="submit"
-                  >
-                    Save
-                  </button>
+              <div className="mb-5.5">
+                <label
+                  className="mb-3 block text-sm font-medium text-black dark:text-white"
+                  htmlFor="username"
+                >
+                  Username
+                </label>
+                <input
+                  className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                  type="text"
+                  id="username"
+                  // {...register("username")}
+                  placeholder="john_doe"
+                />
+                {/* {errors.username && <p className="error">{errors.username.message}</p>} */}
+              </div>
+
+              <div className="mb-5.5">
+                <label
+                  className="mb-3 block text-sm font-medium text-black dark:text-white"
+                  htmlFor="Username"
+                >
+                  BIO
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4.5 top-4">
+                    <BioFieldIcon />
+                  </span>
+
+                  <textarea
+                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                    id="bio"
+                    // {...register("bio")}
+                    rows={6}
+                    placeholder="Write your bio here"
+                  ></textarea>
+                  {/* {errors.bio && <p className="error">{errors.bio.message}</p>} */}
                 </div>
-              </form>
+              </div>
+
+              <div className="flex justify-between gap-4.5">
+                <button
+                  className="flex justify-center rounded border bg-red-500 border-stroke py-2 px-6 font-medium text-white hover:shadow-1 dark:border-strokedark"
+                  type="button"
+                  // OnClick={deleteAccount}
+                >
+                  Delete Account
+                </button>
+                <button
+                  className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
+                  type="submit"
+                >
+                  Save
+                </button>
+              </div>
+              {/* </form> */}
             </div>
           </div>
         </div>

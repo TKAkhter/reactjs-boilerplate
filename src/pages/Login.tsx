@@ -99,7 +99,7 @@ export const Login: React.FC = () => {
             {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Login"}
           </Button>
           <p className="text-center text-sm text-gray-600 mt-3">
-            Don`&apos;`t have an account?{" "}
+            Don&apos;t have an account?{" "}
             <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/register")}>
               {}
               Register
