@@ -3,8 +3,8 @@ import { axiosClient } from "../common/axios";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/authSlice";
 import { save } from "../redux/slices/userSlice";
-import { useHistory } from "react-router-dom";
-import { handleToastError } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
+import { handleToastError } from "@/lib/utils";
 
 export interface RegisterFormValues {
   name: string;
@@ -16,7 +16,7 @@ export interface RegisterFormValues {
 
 const useRegister = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -38,7 +38,7 @@ const useRegister = () => {
           name: data.name,
         }),
       );
-      history.push("/dashboard");
+      navigate("/dashboard");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.message || "An error occurred during registration.");

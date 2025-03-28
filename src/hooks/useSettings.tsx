@@ -1,97 +1,95 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch, useSelector } from "react-redux";
-import * as yup from "yup";
-import { axiosClient } from "../common/axios";
-import { remove, save } from "../redux/slices/userSlice";
-import { RootState } from "../redux/store";
-import { toast } from "react-toastify";
-import { useState } from "react";
-import { addDelay } from "../utils/utils";
-import { useHistory } from "react-router-dom";
-import { logout } from "../redux/slices/authSlice";
+// Import { useForm } from "react-hook-form";
+// Import { yupResolver } from "@hookform/resolvers/yup";
+// Import { useDispatch, useSelector } from "react-redux";
+// Import * as yup from "yup";
+// Import { axiosClient } from "../common/axios";
+// Import { remove, save } from "../redux/slices/userSlice";
+// Import { RootState } from "../redux/store";
+// Import { toast } from "react-toastify";
+// Import { useState } from "react";
+// Import { useNavigate } from "react-router-dom";
+// Import { logout } from "../redux/slices/authSlice";
+// Import { addDelay } from "@/lib/utils";
 
-const schema = yup.object().shape({
-  name: yup.string(),
-  email: yup.string().email(),
-  username: yup.string(),
-  phoneNumber: yup.string(),
-  bio: yup.string(),
-});
+// Const schema = yup.object().shape({
+//   Name: yup.string(),
+//   Email: yup.string().email(),
+//   Username: yup.string(),
+//   PhoneNumber: yup.string(),
+//   Bio: yup.string(),
+// });
 
-interface SettingsForm {
-  name?: string;
-  email?: string;
-  username?: string;
-  phoneNumber?: string;
-  bio?: string;
-}
+// Interface SettingsForm {
+//   Name?: string;
+//   Email?: string;
+//   Username?: string;
+//   PhoneNumber?: string;
+//   Bio?: string;
+// }
 
-export const useSettings = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const user = useSelector((state: RootState) => state.user);
-  const history = useHistory();
-  const dispatch = useDispatch();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SettingsForm>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      name: user.name || "",
-      email: user.email || "",
-      username: user.username || "",
-      phoneNumber: user.phoneNumber || "",
-      bio: user.bio || "",
-    },
-  });
+// Export const useSettings = () => {
+//   Const [isLoading, setIsLoading] = useState(false);
+//   Const user = useSelector((state: RootState) => state.user);
+//   Const navigate = useNavigate();
+//   Const dispatch = useDispatch();
+//   Const {
+//     Register,
+//     HandleSubmit,
+//     FormState: { errors },
+//   } = useForm<SettingsForm>({
+//     Resolver: yupResolver(schema),
+//     DefaultValues: {
+//       Name: user.name || "",
+//       Email: user.email || "",
+//       PhoneNumber: user.phoneNumber || "",
+//       Bio: user.bio || "",
+//     },
+//   });
 
-  const onSubmit = async (submitData: SettingsForm) => {
-    try {
-      setIsLoading(true);
-      const { data } = await axiosClient.put(`/users/${user.id}`, submitData);
-      dispatch(
-        save({
-          id: data.uuid,
-          email: data.email,
-          username: data.username,
-          name: data.name,
-          phoneNumber: data.phoneNumber,
-          bio: data.bio,
-        }),
-      );
-      await addDelay(500);
-      toast.success("Settings updated successfully");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.error(error.message || "Login failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//   Const onSubmit = async (submitData: SettingsForm) => {
+//     Try {
+//       SetIsLoading(true);
+//       Const { data } = await axiosClient.put(`/users/${user.id}`, submitData);
+//       Dispatch(
+//         Save({
+//           Id: data.uuid,
+//           Email: data.email,
+//           Name: data.name,
+//           PhoneNumber: data.phoneNumber,
+//           Bio: data.bio,
+//         }),
+//       );
+//       Await addDelay(500);
+//       Toast.success("Settings updated successfully");
+//       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//     } catch (error: any) {
+//       Console.error(error.message || "Login failed");
+//     } finally {
+//       SetIsLoading(false);
+//     }
+//   };
 
-  const deleteAccount = async () => {
-    try {
-      setIsLoading(true);
-      await axiosClient.delete(`/users/${user.id}`);
-    } catch (error) {
-      console.error("Error deleting account:", error);
-    } finally {
-      setIsLoading(true);
-      toast.success("Account deleted successfully");
-      dispatch(logout());
-      dispatch(remove());
-      history.push("/login");
-    }
-  };
+//   Const deleteAccount = async () => {
+//     Try {
+//       SetIsLoading(true);
+//       Await axiosClient.delete(`/users/${user.id}`);
+//     } catch (error) {
+//       Console.error("Error deleting account:", error);
+//     } finally {
+//       SetIsLoading(true);
+//       Toast.success("Account deleted successfully");
+//       Dispatch(logout());
+//       Dispatch(remove());
+//       Navigate("/login");
+//     }
+//   };
 
-  return {
-    register,
-    handleSubmit,
-    onSubmit,
-    errors,
-    isLoading,
-    deleteAccount,
-  };
-};
+//   Return {
+//     Register,
+//     HandleSubmit,
+//     OnSubmit,
+//     Errors,
+//     IsLoading,
+//     DeleteAccount,
+//   };
+// };

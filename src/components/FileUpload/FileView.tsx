@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { axiosClient } from "../../common/axios";
 
 export const FileView: React.FC = () => {
-  const { imageName } = useParams<{ imageName: string }>();
+  const { id } = useParams<{ id: string }>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [imageDetails, setImageDetails] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -13,7 +13,7 @@ export const FileView: React.FC = () => {
   useEffect(() => {
     const fetchImageDetails = async () => {
       try {
-        const response = await axiosClient.get(`/file/${imageName}`);
+        const response = await axiosClient.get(`/file/${id}`);
         setImageDetails(response.data.data);
         const imageTags = response.data.data.tags.split(",");
         setTags(imageTags);
@@ -24,10 +24,10 @@ export const FileView: React.FC = () => {
       }
     };
 
-    if (imageName) {
+    if (id) {
       fetchImageDetails();
     }
-  }, [imageName]);
+  }, [id]);
 
   if (loading) {
     return <div className="text-center p-4">Loading image details...</div>;

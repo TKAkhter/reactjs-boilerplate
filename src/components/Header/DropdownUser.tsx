@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ClickOutside from "../ClickOutside";
 import UserOne from "../../assets/user-01.png";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,12 +14,12 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
     dispatch(remove());
-    history.push("/login");
+    navigate("/login");
     window.location.reload();
   };
 

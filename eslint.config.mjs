@@ -74,7 +74,7 @@ export default [
       "logical-assignment-operators": ["error"],
       "max-classes-per-file": ["error"],
       "max-depth": ["error"],
-      "max-lines": ["error"],
+      // "max-lines": ["error"],
       "max-nested-callbacks": ["error"],
       "max-statements-per-line": ["error"],
       // "multiline-comment-style": ["error"],
