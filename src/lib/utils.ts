@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
+import logger from "@/common/pino";
 
 export const addDelay = async (delay: number) => {
   // eslint-disable-next-line no-promise-executor-return
@@ -49,7 +50,7 @@ export const isTokenValid = (token: string | null): boolean => {
     const currentTime = Date.now() / 1000; // Current time in seconds
     return decoded.exp > currentTime;
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return false;
   }
 };

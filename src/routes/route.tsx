@@ -32,7 +32,7 @@ const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="/file/:id"
+          path="/image/:id"
           element={
             <DefaultLayout>
               <FileView />

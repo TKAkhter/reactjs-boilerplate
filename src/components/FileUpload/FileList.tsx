@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import { axiosClient } from "../../common/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { resetFileUploaded } from "../../redux/slices/fileSlice";
 import { RootState } from "../../redux/store";
-
-interface File {
-  id: string;
-  name: string;
-  text: string;
-  path: string;
-  tags: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: Date;
-  views: number;
-}
+import { ImageViewer } from "../ImageViewer";
+import { File } from "@/generated";
+import logger from "@/common/pino";
 
 const FileList: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -42,7 +31,7 @@ const FileList: React.FC = () => {
 
     fetchFiles();
 
-    console.log("🚀 ~ useEffect ~ isFileUploaded:", isFileUploaded);
+    logger.info("🚀 ~ useEffect ~ isFileUploaded:", isFileUploaded);
     if (isFileUploaded) {
       fetchFiles();
       dispatch(resetFileUploaded());
@@ -50,47 +39,16 @@ const FileList: React.FC = () => {
   }, [isFileUploaded, dispatch]);
 
   if (loading) {
-    return <h2 className="text-xl text-black dark:text-white">Loading files...</h2>;
+    return <h2 className="text-xl">Loading files...</h2>;
   }
   if (error) {
-    return <h2 className="text-xl text-black dark:text-white">{error}</h2>;
+    return <h2 className="text-xl">{error}</h2>;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleShare = async (e: any) => {
-    try {
-      const response = await axiosClient.post(`/file/share/${e.target.value}`);
-      const { shareableLink } = response.data;
-
-      await navigator.clipboard.writeText(shareableLink);
-
-      toast.success("Link copied to clipboard!");
-    } catch (err) {
-      console.error("Error generating share link:", err);
-    }
-  };
-
   return (
-    <div className="my-4">
-      <h2 className="text-xl text-black dark:text-white">File List:</h2>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 my-10">
-        {files.map((file) => (
-          <div key={file.name}>
-            <Link to={`/file/${file.id}`}>
-              <img
-                className="object-cover object-center w-full h-80 max-w-full rounded-lg"
-                src={`${import.meta.env.VITE_BACKEND_API_URL}/${file.path}`}
-                alt={file.name}
-              />
-            </Link>
-            <div className="flex justify-end">
-              <button className="btn btn-ghost my-4" value={file.name} onClick={handleShare}>
-                Share
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Image Gallery</h1>
+      <ImageViewer images={files} />
     </div>
   );
 };

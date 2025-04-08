@@ -63,7 +63,7 @@
 //       Toast.success("Settings updated successfully");
 //       // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //     } catch (error: any) {
-//       Console.error(error.message || "Login failed");
+//       Logger.error(error.message || "Login failed");
 //     } finally {
 //       SetIsLoading(false);
 //     }
@@ -74,7 +74,7 @@
 //       SetIsLoading(true);
 //       Await axiosClient.delete(`/users/${user.id}`);
 //     } catch (error) {
-//       Console.error("Error deleting account:", error);
+//       Logger.error("Error deleting account:", error);
 //     } finally {
 //       SetIsLoading(true);
 //       Toast.success("Account deleted successfully");

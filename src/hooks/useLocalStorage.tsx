@@ -1,3 +1,4 @@
+import logger from "@/common/pino";
 import { useEffect, useState } from "react";
 
 type SetValue<T> = T | ((val: T) => T);
@@ -13,7 +14,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: SetValue<
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       // If error also return initialValue
-      console.log(error);
+      logger.error(error);
       return initialValue;
     }
   });
@@ -28,7 +29,7 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: SetValue<
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
     } catch (error) {
       // A more advanced implementation would handle the error case
-      console.log(error);
+      logger.error(error);
     }
   }, [key, storedValue]);
 

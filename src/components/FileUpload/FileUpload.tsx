@@ -1,107 +1,131 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { toast } from "react-toastify";
-import { Loader } from "../Loader";
-import { axiosClient } from "../../common/axios";
-import { useDispatch } from "react-redux";
-import { setFileUploaded } from "../../redux/slices/fileSlice";
-import { UpoloadIcon } from "../Icons/UploadIcon";
+import { toast } from "sonner"; // ShadCN Toast
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2, Upload } from "lucide-react"; // Loading Spinner
+import { useDispatch, useSelector } from "react-redux";
+import { setFileUploaded } from "@/redux/slices/fileSlice";
+import { postFileUpload } from "@/generated";
+import { RootState } from "@/redux/store";
+import logger from "@/common/pino";
 
 const FileUpload: React.FC = () => {
+  const authToken = useSelector((state: RootState) => state.auth.token);
   const [tags, setTags] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
-      // "application/*": [".pdf", ".doc", ".docx", ".xls", ".xlsx"],
       "image/*": [".jpeg", ".jpg", ".png", ".gif"],
-      // "video/*": [".mp4", ".mkv", ".avi"],
     },
-    onDrop: (acceptedFiles: React.SetStateAction<File[]>) => {
+    onDrop: (acceptedFiles: File[]) => {
       setUploadedFiles(acceptedFiles);
     },
   });
 
   const handleTagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setTags(value.split(","));
+    setTags(event.target.value.split(","));
   };
 
   const handleUpload = async () => {
-    if (uploadedFiles.length > 0) {
-      setIsUploading(true);
-      try {
-        for (const file of uploadedFiles) {
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("tags", tags.join(","));
-          // eslint-disable-next-line no-await-in-loop
-          await axiosClient.post("/file/upload", formData);
+    if (uploadedFiles.length === 0) {
+      return toast.error("No files selected!");
+    }
+
+    setLoading(true);
+    const loadingToast = toast.loading("Uploading files...");
+
+    try {
+      for (const file of uploadedFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("tags", tags.join(","));
+        // eslint-disable-next-line no-await-in-loop
+        const { error } = await postFileUpload({
+          body: {
+            file,
+            tags: tags.join(","),
+          },
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        if (error) {
+          const errorMessage =
+            (error as { message?: string }).message || "An unknown error occurred";
+          throw new Error(errorMessage);
         }
-        toast.success("File Uploaded Successfully.");
-        dispatch(setFileUploaded());
-      } catch (error) {
-        console.error("Login failed:", error);
-        toast.error("Error uploading files.");
-      } finally {
-        setIsUploading(false);
       }
+
+      toast.success("Files uploaded successfully!", { id: loadingToast });
+      dispatch(setFileUploaded());
+      setUploadedFiles([]); // Clear files after upload
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      logger.error(error.message);
+      toast.error("Login failed. Email or Password is not correct.", { id: loadingToast });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark p-10">
-      {isUploading ? <Loader /> : null}
-      <h2 className="text-xl my-3 text-black dark:text-white">File Upload:</h2>
-      <div
-        {...getRootProps()}
-        className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-16 px-4 dark:bg-meta-4"
-      >
-        <input className="file-input file-input-bordered w-full max-w-xs" {...getInputProps()} />
-        <div className="flex flex-col items-center justify-center space-y-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
-            <UpoloadIcon />
-          </span>
-          <p>
-            <span className="text-primary">Click to upload</span> or drag and drop
-          </p>
-          <p className="mt-1.5">JPEG, PNG, JPG or GIF</p>
-          <p>(max file size: 10mb)</p>
-        </div>
-      </div>
-      {uploadedFiles.length > 0 && (
-        <div>
-          <h2 className="pt-4 text-black dark:text-white">Uploaded Files:</h2>
-          {uploadedFiles.map((file, index) => (
-            <div className="pt-2" key={index}>
-              {file.name}
+    <Card className="p-6">
+      <CardHeader>
+        <CardTitle>File Upload</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {/* Dropzone */}
+        <div
+          {...getRootProps()}
+          className="border-dashed border-2 border-primary p-10 rounded-lg cursor-pointer text-center"
+        >
+          <input {...getInputProps()} />
+          <div className="flex flex-col items-center space-y-3">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full">
+              <Upload />
             </div>
-          ))}
+            <p className="text-gray-700 dark:text-gray-400">
+              <span className="text-primary font-medium">Click to upload</span> or drag & drop
+            </p>
+            <p className="text-xs text-gray-700 dark:text-gray-400">
+              JPEG, PNG, JPG, GIF (Max: 10MB)
+            </p>
+          </div>
         </div>
-      )}
-      <div>
-        <label className="input input-bordered flex items-center gap-2 my-8 justify-between">
-          <input
-            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+
+        {/* Uploaded Files List */}
+        {uploadedFiles.length > 0 && (
+          <div className="mt-4 space-y-2">
+            <h4 className="text-lg font-medium">Selected Files:</h4>
+            {uploadedFiles.map((file, index) => (
+              <div key={index} className="text-sm text-gray-600">
+                {file.name}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Tags Input */}
+        <div className="mt-4">
+          <Input
             type="text"
             placeholder="Tags (comma separated)"
             onChange={handleTagChange}
+            className="border rounded-lg"
           />
-          <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-            optional
-          </span>
-        </label>
-        <button
-          className="block cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-          onClick={handleUpload}
-          disabled={isUploading}
-        >
-          Upload Files
-        </button>
-      </div>
-    </div>
+        </div>
+
+        {/* Upload Button */}
+        <Button className="mt-6 w-full" onClick={handleUpload} disabled={loading}>
+          {loading ? <Loader2 className="animate-spin mr-2 h-5 w-5" /> : "Upload Files"}
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -75,7 +75,7 @@ export const Register: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="w-full max-w-sm bg-white p-6 rounded-lg shadow-md">
+      <div className="w-full max-w-sm p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-center mb-4">Create Account</h2>
 
         <form onSubmit={handleSubmit(onSubmit)}>

@@ -3,6 +3,7 @@ import React from "react";
 import { UserFieldIcon } from "../components/Icons/UserFieldIcon";
 import { MailFieldIcon } from "../components/Icons/MailFieldIcon";
 import { BioFieldIcon } from "../components/Icons/BioFieldIcon";
+import { Button } from "@/components/ui/button";
 // Import { UpoloadIcon } from "../components/Icons/UploadIcon";
 // Import { useSettings } from "../hooks/useSettings";
 // Import { Loader } from "../components/Loader";
@@ -15,7 +16,7 @@ export const Settings: React.FC = () => {
       {/* {isLoading ? <Loader /> : null} */}
       <div className="grid grid-cols-5 gap-8">
         <div className="col-span-5 xl:col-span-3">
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+          <div className="rounded-sm border border-stroke shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">Personal Information</h3>
             </div>
@@ -125,26 +126,15 @@ export const Settings: React.FC = () => {
               </div>
 
               <div className="flex justify-between gap-4.5">
-                <button
-                  className="flex justify-center rounded border bg-red-500 border-stroke py-2 px-6 font-medium text-white hover:shadow-1 dark:border-strokedark"
-                  type="button"
-                  // OnClick={deleteAccount}
-                >
-                  Delete Account
-                </button>
-                <button
-                  className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90"
-                  type="submit"
-                >
-                  Save
-                </button>
+                <Button variant="destructive">Destructive</Button>
+                <Button type="submit">Save</Button>
               </div>
               {/* </form> */}
             </div>
           </div>
         </div>
         {/* <div className="col-span-5 xl:col-span-2">
-                        <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                        <div className="rounded-sm border border-stroke shadow-default dark:border-strokedark dark:bg-boxdark">
                             <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                                 <h3 className="font-medium text-black dark:text-white">Your Photo</h3>
                             </div>
@@ -171,7 +161,7 @@ export const Settings: React.FC = () => {
                                         className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
                                     />
                                     <div className="flex flex-col items-center justify-center space-y-3">
-                                        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
+                                        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke dark:border-strokedark dark:bg-boxdark">
                                             <UpoloadIcon />
                                         </span>
                                         <p>
