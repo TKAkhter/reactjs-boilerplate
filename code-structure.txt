@@ -22,11 +22,8 @@
 │   │   │   └── FileView.tsx
 │   │   ├── Header/
 │   │   │   └── Header.tsx
-│   │   ├── Icons/
-│   │   │   ├── BioFieldIcon.tsx
-│   │   │   ├── MailFieldIcon.tsx
-│   │   │   └── UserFieldIcon.tsx
 │   │   ├── ui/
+│   │   │   ├── alert-dialog.tsx
 │   │   │   ├── alert.tsx
 │   │   │   ├── avatar.tsx
 │   │   │   ├── badge.tsx
@@ -35,7 +32,8 @@
 │   │   │   ├── dropdown-menu.tsx
 │   │   │   ├── input.tsx
 │   │   │   ├── label.tsx
-│   │   │   └── sonner.tsx
+│   │   │   ├── sonner.tsx
+│   │   │   └── textarea.tsx
 │   │   ├── ImageViewer.tsx
 │   │   ├── Loader.tsx
 │   │   └── Logo.tsx
@@ -67,7 +65,8 @@
 │   ├── routes/
 │   │   └── route.tsx
 │   ├── schemas/
-│   │   └── auth.schema.ts
+│   │   ├── auth.schema.ts
+│   │   └── settings.schema.ts
 │   ├── types/
 │   │   └── types.ts
 │   ├── App.tsx
