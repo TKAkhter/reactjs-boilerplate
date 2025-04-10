@@ -164,7 +164,7 @@ export const Register: React.FC = () => {
             <p className="text-center text-sm text-muted-foreground mt-4">
               Already have an account?{" "}
               <span
-                className="text-primary underline cursor-pointer"
+                className="text-primary hover:underline cursor-pointer"
                 onClick={() => navigate("/login")}
               >
                 Login

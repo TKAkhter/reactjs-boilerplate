@@ -24,6 +24,11 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
   const { theme, setTheme } = useTheme();
+  const initials = (user.name ?? "T A")
+    .trim()
+    .split(/\s+/)
+    .map((word) => word[0].toUpperCase())
+    .join("");
 
   const handleLogout = () => {
     dispatch(logout());
@@ -69,13 +74,11 @@ export const Header: React.FC = () => {
           <DropdownMenuTrigger>
             <Avatar>
               <AvatarImage src="https://i.pravatar.cc/300" alt="User" />
-              <AvatarFallback>{user.email.substring(0, 1).toUpperCase()}</AvatarFallback>
+              <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40 mt-2">
-            <DropdownMenuLabel>
-              {user.name ?? user.email.substring(0, 1).toUpperCase()}
-            </DropdownMenuLabel>
+            <DropdownMenuLabel>{initials}</DropdownMenuLabel>
             <Label className="px-2 py-1.5 dark:text-white text-gray-500">{user.email}</Label>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSettings}>

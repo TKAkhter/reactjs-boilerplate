@@ -12,13 +12,27 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
-import { save } from "@/redux/slices/userSlice";
-import { getUserById, putUserById } from "@/generated";
+import { remove, save } from "@/redux/slices/userSlice";
+import { deleteUserById, getUserById, putUserById } from "@/generated";
 import { RootState } from "@/redux/store";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { logout } from "@/redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export const Settings: React.FC = () => {
   const userId = useSelector((state: RootState) => state.user.id);
   const authToken = useSelector((state: RootState) => state.auth.token);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [account, setAccount] = useState({
@@ -73,6 +87,32 @@ export const Settings: React.FC = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const loadingToast = toast.loading("Deleting account...");
+    try {
+      const { error } = await deleteUserById({
+        path: { id: userId },
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (error) {
+        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
+        throw new Error(errorMessage);
+      }
+
+      toast.success("Account deleted successfully", { id: loadingToast });
+
+      dispatch(logout());
+      dispatch(remove());
+      navigate("/login");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(`Account deleted failed: ${error.message}`, { id: loadingToast });
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await getUserById({
@@ -104,7 +144,7 @@ export const Settings: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex flex-col lg:flex-row justify-center items-start gap-8 p-6">
       <Card className="w-full max-w-xl">
         <CardHeader>
           <CardTitle>Account Settings</CardTitle>
@@ -182,12 +222,48 @@ export const Settings: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter className="mt-6 justify-end">
-            <Button type="submit" className="" disabled={loading}>
+            <Button type="submit" disabled={loading}>
               {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Save Changes"}
             </Button>
           </CardFooter>
         </form>
       </Card>
+
+      <div className="w-full lg:w-1/3">
+        <Card className="border-destructive bg-destructive/10">
+          <CardHeader>
+            <CardTitle className="text-destructive">Delete Account</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-destructive mb-4">
+              Deleting your account will also delete all images you have uploaded.
+            </p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="w-full">
+                  {" "}
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your image and remove
+                    your data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteAccount}>
+                    {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Delete"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

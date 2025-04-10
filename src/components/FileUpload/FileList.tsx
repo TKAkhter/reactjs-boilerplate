@@ -11,12 +11,13 @@ export const FileList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.user.id);
   const isFileUploaded = useSelector((state: RootState) => state.file.isFileUploaded);
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axiosClient.get("/file");
+        const response = await axiosClient.get(`/file/user/${userId}`);
         if (response.data.data && response.data.data.length > 0) {
           setFiles(response.data.data);
         }
@@ -43,7 +44,7 @@ export const FileList: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-bold mb-4">Image Gallery</h1>
       <ImageViewer images={files} />
     </div>
