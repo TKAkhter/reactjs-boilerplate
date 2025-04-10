@@ -13,18 +13,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { LogOut, Moon, Settings, Sun } from "lucide-react";
 import { Button } from "../ui/button";
-import useColorMode from "@/hooks/useColorMode";
 import { Label } from "../ui/label";
 import { Logo } from "../Logo";
 import { logout } from "@/redux/slices/authSlice";
 import { remove } from "@/redux/slices/userSlice";
+import { useTheme } from "next-themes";
 
 export const Header: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.user);
-
-  const [colorMode, setColorMode] = useColorMode();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -41,9 +40,7 @@ export const Header: React.FC = () => {
   };
 
   const toggleTheme = () => {
-    if (typeof setColorMode === "function") {
-      setColorMode(colorMode === "light" ? "dark" : "light");
-    }
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   return (
@@ -60,7 +57,7 @@ export const Header: React.FC = () => {
       <div className="flex items-center space-x-4">
         {/* Dark mode toggle */}
         <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle Theme">
-          {colorMode === "dark" ? (
+          {theme === "dark" ? (
             <Sun className="h-[1.2rem] w-[1.2rem]" />
           ) : (
             <Moon className="h-[1.2rem] w-[1.2rem]" />

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../redux/store";
+import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addDelay, cn, isTokenValid } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
@@ -15,6 +14,8 @@ import { toast } from "sonner";
 import { login } from "@/redux/slices/authSlice";
 import { save } from "@/redux/slices/userSlice";
 import { registerSchema, RegisterSchema } from "@/schemas/auth.schema";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Register: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -33,8 +34,8 @@ export const Register: React.FC = () => {
 
   const onSubmit = async (submittedData: RegisterSchema) => {
     setLoading(true);
+    const loadingToast = toast.loading("Creating account...");
 
-    const loadingToast = toast.loading("Logging in...");
     try {
       const { data, error } = await postAuthRegister({ body: submittedData });
 
@@ -46,12 +47,12 @@ export const Register: React.FC = () => {
       dispatch(login(data!.data!.token));
       dispatch(save(data!.data!.user));
 
-      toast.success("User Created Successfully", { id: loadingToast });
+      toast.success("Account created successfully", { id: loadingToast });
       await addDelay(500);
       navigate("/dashboard");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      toast.error(`User Creation Failed: ${error.message}`, { id: loadingToast });
+      toast.error(`Account creation failed: ${error.message}`, { id: loadingToast });
     } finally {
       setLoading(false);
     }
@@ -74,100 +75,104 @@ export const Register: React.FC = () => {
   const checkPasswordRule = (rule: { regex: RegExp }) => rule.regex.test(password);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <div className="w-full max-w-sm p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-center mb-4">Create Account</h2>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-center text-xl">Create Account</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-1">
+              <Label htmlFor="name" className="mb-2">
+                Name
+              </Label>
+              <Input id="name" {...register("name")} placeholder="Your full name" />
+              {errors.name && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>{errors.name.message}</AlertTitle>
+                </Alert>
+              )}
+            </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Label className="block text-sm font-medium text-gray-700">Name</Label>
-          <Input
-            id="name"
-            {...register("name")}
-            type="text"
-            placeholder="Enter your name"
-            className="my-1 w-full"
-            {...register("name")}
-          />
-          {errors.name && (
-            <Alert variant="destructive" className="my-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>
-                {typeof errors.name.message === "string" && errors.name.message}
-              </AlertTitle>
-            </Alert>
-          )}
+            <div className="space-y-1">
+              <Label htmlFor="email" className="mb-2">
+                Email
+              </Label>
+              <Input id="email" type="email" {...register("email")} placeholder="you@example.com" />
+              {errors.email && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>{errors.email.message}</AlertTitle>
+                </Alert>
+              )}
+            </div>
 
-          <Label className="block text-sm font-medium text-gray-700 mt-3">Email</Label>
-          <Input
-            id="email"
-            {...register("email")}
-            type="text"
-            placeholder="Enter your email"
-            className="my-1 w-full"
-            {...register("email")}
-          />
-          {errors.email && (
-            <Alert variant="destructive" className="my-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>
-                {typeof errors.email.message === "string" && errors.email.message}
-              </AlertTitle>
-            </Alert>
-          )}
+            <div className="space-y-1">
+              <Label htmlFor="password" className="mb-2">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+                placeholder="Enter a secure password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <div className="mt-2 space-y-1 text-sm mt-4">
+                {passwordRules.map((rule, index) => (
+                  <p
+                    key={index}
+                    className={cn(
+                      "flex items-center gap-2",
+                      checkPasswordRule(rule) ? "text-green-600" : "text-red-600",
+                    )}
+                  >
+                    {checkPasswordRule(rule) ? (
+                      <Check className="h-4 w-4" />
+                    ) : (
+                      <X className="h-4 w-4" />
+                    )}
+                    {rule.label}
+                  </p>
+                ))}
+              </div>
+            </div>
 
-          <Label className="block text-sm font-medium text-gray-700 mt-3">Password</Label>
-          <Input
-            id="password"
-            {...register("password")}
-            type="password"
-            placeholder="Enter your password"
-            className="mt-1 w-full"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <div className="my-4 text-sm">
-            {passwordRules.map((rule, index) => (
-              <p
-                key={index}
-                className={cn(
-                  "flex my-1",
-                  checkPasswordRule(rule) ? "text-green-600" : "text-red-600",
-                )}
+            <div className="space-y-1">
+              <Label htmlFor="confirmPassword" className="mb-2">
+                Confirm Password
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                {...register("confirmPassword")}
+                placeholder="Repeat your password"
+              />
+              {errors.confirmPassword && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>{errors.confirmPassword.message}</AlertTitle>
+                </Alert>
+              )}
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Create Account"}
+            </Button>
+
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              Already have an account?{" "}
+              <span
+                className="text-primary underline cursor-pointer"
+                onClick={() => navigate("/login")}
               >
-                {checkPasswordRule(rule) ? <Check /> : <X />} {rule.label}
-              </p>
-            ))}
-          </div>
-
-          <Label className="block text-sm font-medium text-gray-700">Confirm Password</Label>
-          <Input
-            id="confirmPassword"
-            {...register("confirmPassword")}
-            type="text"
-            placeholder="Enter your confirmPassword"
-            className="mt-1 w-full"
-            {...register("confirmPassword")}
-          />
-          {errors.confirmPassword && (
-            <Alert variant="destructive" className="my-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>
-                {typeof errors.confirmPassword.message === "string" &&
-                  errors.confirmPassword.message}
-              </AlertTitle>
-            </Alert>
-          )}
-
-          <Button className="w-full mt-4 bg-black text-white" disabled={loading}>
-            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Login"}
-          </Button>
-          <p className="text-center text-sm text-gray-600 mt-3">
-            Already have an account?{" "}
-            <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>
-              Login
-            </span>
-          </p>
-        </form>
-      </div>
+                Login
+              </span>
+            </p>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

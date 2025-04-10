@@ -6,7 +6,7 @@ import { addDelay, isTokenValid } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { login } from "@/redux/slices/authSlice";
 import { save } from "@/redux/slices/userSlice";
 import { authSchema, AuthSchema } from "@/schemas/auth.schema";
 import logger from "@/common/pino";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const Login: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -51,7 +52,9 @@ export const Login: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       logger.error(error.message);
-      toast.error("Login failed. Email or Password is not correct.", { id: loadingToast });
+      toast.error("Login failed. Email or Password is not correct.", {
+        id: loadingToast,
+      });
     } finally {
       setLoading(false);
     }
@@ -64,48 +67,63 @@ export const Login: React.FC = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-black">
-      <div className="w-full max-w-sm p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-center mb-4">Login</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background px-4">
+      <Card className="w-full max-w-sm shadow-md">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-bold">Login</CardTitle>
+        </CardHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Label className="block text-sm font-medium text-gray-700">Email</Label>
-          <Input
-            id="email"
-            {...register("email")}
-            type="text"
-            placeholder="Enter your email"
-            className="mt-1 w-full"
-            {...register("email")}
-          />
-          {errors.email && (
-            <Alert variant="destructive" className="my-2">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>
-                {typeof errors.email.message === "string" && errors.email.message}
-              </AlertTitle>
-            </Alert>
-          )}
-          <Label className="block text-sm font-medium text-gray-700 mt-3">Password</Label>
-          <Input
-            id="password"
-            {...register("password")}
-            type="password"
-            placeholder="Enter your password"
-            className="mt-1 w-full"
-          />
-          <Button className="w-full mt-4" disabled={loading}>
-            {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Login"}
-          </Button>
-          <p className="text-center text-sm text-gray-600 mt-3">
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="mb-2">
+                Email
+              </Label>
+              <Input id="email" type="text" placeholder="Enter your email" {...register("email")} />
+              {errors.email && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.email.message}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="password" className="mb-2">
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                {...register("password")}
+              />
+              {errors.password && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.password.message}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Login"}
+            </Button>
+          </form>
+        </CardContent>
+
+        <CardFooter className="flex flex-col items-center">
+          <p className="text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/register")}>
-              {}
+            <span
+              className="text-primary hover:underline cursor-pointer"
+              onClick={() => navigate("/register")}
+            >
               Register
             </span>
           </p>
-        </form>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 };

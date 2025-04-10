@@ -1,7 +1,15 @@
 import React from "react";
-export const Loader = () => {
+import { cn } from "@/lib/utils";
+
+export const Loader = ({ className }: { className?: string }) => {
   return (
-    <div className="flex h-screen items-center justify-center bg-white dark:bg-boxdark dark:bg-opacity-50 bg-opacity-50 fixed w-full top-0 left-0 right-0 z-10">
+    <div
+      className={cn(
+        "fixed inset-0 flex items-center justify-center z-50",
+        "bg-background/80",
+        className,
+      )}
+    >
       <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
     </div>
   );

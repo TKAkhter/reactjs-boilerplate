@@ -1,180 +1,193 @@
-import React from "react";
-// Import userOne from "../assets/user-01.png";
-import { UserFieldIcon } from "../components/Icons/UserFieldIcon";
-import { MailFieldIcon } from "../components/Icons/MailFieldIcon";
-import { BioFieldIcon } from "../components/Icons/BioFieldIcon";
+import React, { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-// Import { UpoloadIcon } from "../components/Icons/UploadIcon";
-// Import { useSettings } from "../hooks/useSettings";
-// Import { Loader } from "../components/Loader";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
+import { settingsSchema, SettingsSchema } from "@/schemas/settings.schema";
+import PhoneInput from "react-phone-number-input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { save } from "@/redux/slices/userSlice";
+import { getUserById, putUserById } from "@/generated";
+import { RootState } from "@/redux/store";
 
 export const Settings: React.FC = () => {
-  // Const { register, handleSubmit, onSubmit, errors, isLoading, deleteAccount } = useSettings();
+  const userId = useSelector((state: RootState) => state.user.id);
+  const authToken = useSelector((state: RootState) => state.auth.token);
+  const dispatch = useDispatch();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [account, setAccount] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    bio: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<SettingsSchema>({
+    resolver: zodResolver(settingsSchema),
+  });
+
+  const onSubmit = async (submittedData: SettingsSchema) => {
+    setLoading(true);
+    const loadingToast = toast.loading("Updating account...");
+    try {
+      const { data, error } = await putUserById({
+        path: { id: userId },
+        body: {
+          name: submittedData.name,
+          phoneNumber: submittedData.phone,
+          bio: submittedData.bio,
+        },
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (error) {
+        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
+        throw new Error(errorMessage);
+      }
+
+      if (data?.data) {
+        dispatch(save(data.data));
+      }
+
+      toast.success("Account updated successfully", { id: loadingToast });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(`Account update failed: ${error.message}`, { id: loadingToast });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await getUserById({
+        path: { id: userId },
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (error) {
+        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
+        throw new Error(errorMessage);
+      }
+
+      if (data?.success) {
+        const updatedAccount = {
+          name: data.data!.name,
+          email: data.data!.email,
+          phone: data.data!.phoneNumber,
+          bio: data.data!.bio,
+        };
+
+        setAccount(updatedAccount);
+        reset(updatedAccount);
+      }
+    };
+
+    fetchData().catch(console.error);
+  }, []);
 
   return (
-    <div className="mx-auto max-w-270">
-      {/* {isLoading ? <Loader /> : null} */}
-      <div className="grid grid-cols-5 gap-8">
-        <div className="col-span-5 xl:col-span-3">
-          <div className="rounded-sm border border-stroke shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">Personal Information</h3>
+    <div className="flex">
+      <Card className="w-full max-w-xl">
+        <CardHeader>
+          <CardTitle>Account Settings</CardTitle>
+        </CardHeader>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4">
+            {/* Name */}
+            <div>
+              <Label htmlFor="name" className="mb-2">
+                Name
+              </Label>
+              <Input id="name" placeholder="John Doe" {...register("name")} />
+              {errors.name && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.name.message}</AlertDescription>
+                </Alert>
+              )}
             </div>
-            <div className="p-7">
-              {/* <form onSubmit={handleSubmit(onSubmit)}> */}
-              <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                <div className="w-full sm:w-1/2">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="name"
-                  >
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-4.5 top-4">
-                      <UserFieldIcon />
-                    </span>
-                    <input
-                      className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      id="name"
-                      // {...register("name")}
-                      placeholder="John Doe"
-                    />
-                    {/* {errors.name && <p className="error">{errors.name.message}</p>} */}
-                  </div>
-                </div>
 
-                <div className="w-full sm:w-1/2">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="phoneNumber"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    type="text"
-                    id="phoneNumber"
-                    // {...register("phoneNumber")}
+            {/* Email */}
+            <div>
+              <Label htmlFor="email" className="mb-2">
+                Email
+              </Label>
+              <Input id="email" disabled placeholder="you@example.com" />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <Label htmlFor="phone" className="mb-2">
+                Phone Number
+              </Label>
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <PhoneInput
+                    {...field}
+                    value={field.value}
+                    onChange={field.onChange}
+                    international
+                    defaultCountry="US"
+                    className="react-phone-input"
                     placeholder="+1 123 456 7890"
                   />
-                  {/* {errors.phoneNumber && <p className="error">{errors.phoneNumber.message}</p>} */}
-                </div>
-              </div>
-
-              <div className="mb-5.5">
-                <label
-                  className="mb-3 block text-sm font-medium text-black dark:text-white"
-                  htmlFor="email"
-                >
-                  Email Address
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4.5 top-4">
-                    <MailFieldIcon />
-                  </span>
-                  <input
-                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    type="email"
-                    // {...register("email")}
-                    id="email"
-                    placeholder="johndoe@example.com"
-                  />
-                  {/* {errors.email && <p className="error">{errors.email.message}</p>} */}
-                </div>
-              </div>
-
-              <div className="mb-5.5">
-                <label
-                  className="mb-3 block text-sm font-medium text-black dark:text-white"
-                  htmlFor="username"
-                >
-                  Username
-                </label>
-                <input
-                  className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                  type="text"
-                  id="username"
-                  // {...register("username")}
-                  placeholder="john_doe"
-                />
-                {/* {errors.username && <p className="error">{errors.username.message}</p>} */}
-              </div>
-
-              <div className="mb-5.5">
-                <label
-                  className="mb-3 block text-sm font-medium text-black dark:text-white"
-                  htmlFor="Username"
-                >
-                  BIO
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4.5 top-4">
-                    <BioFieldIcon />
-                  </span>
-
-                  <textarea
-                    className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    id="bio"
-                    // {...register("bio")}
-                    rows={6}
-                    placeholder="Write your bio here"
-                  ></textarea>
-                  {/* {errors.bio && <p className="error">{errors.bio.message}</p>} */}
-                </div>
-              </div>
-
-              <div className="flex justify-between gap-4.5">
-                <Button variant="destructive">Destructive</Button>
-                <Button type="submit">Save</Button>
-              </div>
-              {/* </form> */}
+                )}
+              />
+              {errors.phone && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.phone.message}</AlertDescription>
+                </Alert>
+              )}
             </div>
-          </div>
-        </div>
-        {/* <div className="col-span-5 xl:col-span-2">
-                        <div className="rounded-sm border border-stroke shadow-default dark:border-strokedark dark:bg-boxdark">
-                            <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                                <h3 className="font-medium text-black dark:text-white">Your Photo</h3>
-                            </div>
-                            <div className="p-7">
-                                <div className="mb-4 flex items-center gap-3">
-                                    <div className="h-14 w-14 rounded-full">
-                                        <img src={userOne} alt="User" />
-                                    </div>
-                                    <div>
-                                        <span className="mb-1.5 text-black dark:text-white">Edit your photo</span>
-                                        <span className="flex gap-2.5">
-                                            <button className="text-sm hover:text-primary">Delete</button>
-                                        </span>
-                                    </div>
-                                </div>
 
-                                <div
-                                    id="FileUpload"
-                                    className="relative mb-5.5 block w-full cursor-pointer appearance-none rounded border border-dashed border-primary bg-gray py-4 px-4 dark:bg-meta-4 sm:py-7.5"
-                                >
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
-                                    />
-                                    <div className="flex flex-col items-center justify-center space-y-3">
-                                        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke dark:border-strokedark dark:bg-boxdark">
-                                            <UpoloadIcon />
-                                        </span>
-                                        <p>
-                                            <span className="text-primary">Click to upload</span> or drag and drop
-                                        </p>
-                                        <p className="mt-1.5">SVG, PNG, JPG or GIF</p>
-                                        <p>(max, 800 X 800px)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
-      </div>
+            {/* Bio */}
+            <div>
+              <Label htmlFor="bio" className="mb-2">
+                Bio
+              </Label>
+              <Textarea
+                id="bio"
+                rows={4}
+                {...register("bio")}
+                placeholder="Tell us about yourself"
+                className="border-input rounded-md px-3 py-2 w-full text-sm bg-background text-foreground"
+              />
+              {errors.bio && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{errors.bio.message}</AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter className="mt-6 justify-end">
+            <Button type="submit" className="" disabled={loading}>
+              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Save Changes"}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 };

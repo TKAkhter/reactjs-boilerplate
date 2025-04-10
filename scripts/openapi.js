@@ -6,3 +6,5 @@ createClient({
   output: 'src/generated',
   plugins: ['@hey-api/client-fetch'],
 });
+
+// http://localhost:5000/docs/swagger.json

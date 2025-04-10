@@ -11,7 +11,7 @@ import { postFileUpload } from "@/generated";
 import { RootState } from "@/redux/store";
 import logger from "@/common/pino";
 
-const FileUpload: React.FC = () => {
+export const FileUpload: React.FC = () => {
   const authToken = useSelector((state: RootState) => state.auth.token);
   const [tags, setTags] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -110,23 +110,18 @@ const FileUpload: React.FC = () => {
           </div>
         )}
 
-        {/* Tags Input */}
-        <div className="mt-4">
+        <div className="flex w-full max-w-sm items-center space-x-2 mt-4">
           <Input
             type="text"
             placeholder="Tags (comma separated)"
             onChange={handleTagChange}
             className="border rounded-lg"
           />
+          <Button className="" onClick={handleUpload} disabled={loading}>
+            {loading ? <Loader2 className="animate-spin mr-2 h-5 w-5" /> : "Upload Files"}
+          </Button>
         </div>
-
-        {/* Upload Button */}
-        <Button className="mt-6 w-full" onClick={handleUpload} disabled={loading}>
-          {loading ? <Loader2 className="animate-spin mr-2 h-5 w-5" /> : "Upload Files"}
-        </Button>
       </CardContent>
     </Card>
   );
 };
-
-export default FileUpload;

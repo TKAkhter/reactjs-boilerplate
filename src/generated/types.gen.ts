@@ -470,12 +470,15 @@ export type PutUserByIdResponses = {
     statusCode: number;
     message: string;
     data?: {
-      name?: string;
-      email?: string;
-      resetToken?: string;
-      updatedAt?: string;
-      phoneNumber?: string;
-      bio?: string;
+      id: string;
+      name: string;
+      email: string;
+      password: string;
+      resetToken: string;
+      createdAt: string;
+      updatedAt: string;
+      phoneNumber: string;
+      bio: string;
     };
   };
 };

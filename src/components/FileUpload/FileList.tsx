@@ -5,9 +5,8 @@ import { resetFileUploaded } from "../../redux/slices/fileSlice";
 import { RootState } from "../../redux/store";
 import { ImageViewer } from "../ImageViewer";
 import { File } from "@/generated";
-import logger from "@/common/pino";
 
-const FileList: React.FC = () => {
+export const FileList: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
@@ -30,8 +29,6 @@ const FileList: React.FC = () => {
     };
 
     fetchFiles();
-
-    logger.info("🚀 ~ useEffect ~ isFileUploaded:", isFileUploaded);
     if (isFileUploaded) {
       fetchFiles();
       dispatch(resetFileUploaded());
@@ -52,5 +49,3 @@ const FileList: React.FC = () => {
     </div>
   );
 };
-
-export default FileList;
