@@ -100,7 +100,7 @@ export const Settings: React.FC = () => {
       }
     };
 
-    fetchData().catch(console.error);
+    fetchData().catch((error) => toast.error(error.message));
   }, []);
 
   return (

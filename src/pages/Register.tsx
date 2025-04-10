@@ -119,7 +119,7 @@ export const Register: React.FC = () => {
                 placeholder="Enter a secure password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <div className="mt-2 space-y-1 text-sm mt-4">
+              <div className="space-y-1 text-sm mt-4">
                 {passwordRules.map((rule, index) => (
                   <p
                     key={index}
