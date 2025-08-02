@@ -2,14 +2,17 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Dashboard } from "../pages/Dashboard";
 import { Login } from "../pages/Login";
-import { NotFound } from "../pages/NotFound";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 import { Register } from "../pages/Register";
-import { FileView } from "../components/FileUpload/FileView";
 import { DefaultLayout } from "../layout/DefaultLayout";
 import { Settings } from "../pages/Settings";
+import NotFound from "@/pages/NotFound";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const AppRoutes: React.FC = () => {
+  const authToken = useSelector((state: RootState) => state.auth.token);
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -31,17 +34,9 @@ const AppRoutes: React.FC = () => {
             </DefaultLayout>
           }
         />
-        <Route
-          path="/image/:id"
-          element={
-            <DefaultLayout>
-              <FileView />
-            </DefaultLayout>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound isAuthenticated={Boolean(authToken)} />} />
       </Route>
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFound isAuthenticated={Boolean(authToken)} />} />
     </Routes>
   );
 };

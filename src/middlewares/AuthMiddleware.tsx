@@ -1,10 +1,14 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { Navigate, Outlet } from "react-router-dom";
+// Import { useSelector } from "react-redux";
+// Import { RootState } from "../redux/store";
+import { /* Navigate, */ Outlet } from "react-router-dom";
+
+// Export const AuthMiddleware: React.FC = () => {
+//   Const authToken = useSelector((state: RootState) => state.auth.token);
+
+//   Return authToken ? <Outlet /> : <Navigate to="/login" replace />;
+// };
 
 export const AuthMiddleware: React.FC = () => {
-  const authToken = useSelector((state: RootState) => state.auth.token);
-
-  return authToken ? <Outlet /> : <Navigate to="/login" replace />;
+  return <Outlet />;
 };

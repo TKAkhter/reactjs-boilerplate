@@ -27,7 +27,8 @@ export const Header: React.FC = () => {
   const initials = (user.name ?? "T A")
     .trim()
     .split(/\s+/)
-    .map((word) => word[0].toUpperCase())
+    // eslint-disable-next-line no-confusing-arrow
+    .map((word) => (word ? word[0].toUpperCase() : ""))
     .join("");
 
   const handleLogout = () => {

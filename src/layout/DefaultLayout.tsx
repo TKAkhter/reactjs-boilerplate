@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
+import React /*, { useEffect } */ from "react";
 import { Header } from "@/components/Header/Header";
 import { LayoutProps } from "@/types/types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { isTokenValid } from "@/lib/utils";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+// Import { isTokenValid } from "@/lib/utils";
+// Import { useSelector } from "react-redux";
+// Import { RootState } from "@/redux/store";
 
 export const DefaultLayout = ({ children }: LayoutProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const authToken = useSelector((state: RootState) => state.auth.token);
+  // Const authToken = useSelector((state: RootState) => state.auth.token);
 
-  useEffect(() => {
-    if (!isTokenValid(authToken)) {
-      navigate("/login");
-    }
-  }, [authToken]);
+  // UseEffect(() => {
+  //   If (!isTokenValid(authToken)) {
+  //     Navigate("/login");
+  //   }
+  // }, [authToken]);
 
   const showBackButton = location.pathname !== "/dashboard";
   return (
