@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getUserFromCookie, removeUserCookie, setUserCookie } from "../../common/cookie";
 import logger from "../../common/pino";
-import { User } from "@/generated";
 
-const initialState: User = getUserFromCookie() || {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const initialState: any = getUserFromCookie() || {
   email: "",
   id: "",
   username: "",
@@ -16,7 +16,8 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    save: (state, action: PayloadAction<User>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    save: (state, action: PayloadAction<any>) => {
       logger.info("Dispatching save action with payload:", action.payload);
       state.email = action.payload.email;
       state.id = action.payload.id;

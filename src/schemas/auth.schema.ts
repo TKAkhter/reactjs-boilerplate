@@ -22,7 +22,8 @@ export const registerSchema = z
       .regex(/[A-Z]/, "Password must have at least one uppercase letter")
       .regex(/\d/, "Password must have at least one number")
       .regex(/[@$!%*?&]/, "Password must have at least one special character"),
-    confirmPassword: z.string(),
+    confirmPassword: z.string().optional(),
+    role: z.enum(["user", "admin"]).optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",

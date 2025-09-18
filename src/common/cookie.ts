@@ -1,5 +1,4 @@
 import Cookies from "js-cookie";
-import { User } from "@/generated";
 
 export const setTokenCookie = (token: string) => {
   Cookies.set("token", token, { expires: 1 });
@@ -13,7 +12,8 @@ export const removeTokenCookie = () => {
   Cookies.remove("token");
 };
 
-export const setUserCookie = (user: User) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const setUserCookie = (user: any) => {
   Cookies.set("user", JSON.stringify(user), { expires: 1 });
 };
 

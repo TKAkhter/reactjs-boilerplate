@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { addDelay, isTokenValid } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { postAuthLogin } from "@/generated";
 import { toast } from "sonner";
-import { login } from "@/redux/slices/authSlice";
-import { save } from "@/redux/slices/userSlice";
 import { authSchema, AuthSchema } from "@/schemas/auth.schema";
 import logger from "@/common/pino";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +18,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 export const Login: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -32,20 +28,11 @@ export const Login: React.FC = () => {
     resolver: zodResolver(authSchema),
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (submittedData: AuthSchema) => {
     setLoading(true);
     const loadingToast = toast.loading("Logging in...");
     try {
-      const { data, error } = await postAuthLogin({ body: submittedData });
-
-      if (error) {
-        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
-        throw new Error(errorMessage);
-      }
-
-      dispatch(login(data!.data!.token));
-      dispatch(save(data!.data!.user));
-
       toast.success("Login successful!", { id: loadingToast });
       await addDelay(500);
       navigate("/dashboard");

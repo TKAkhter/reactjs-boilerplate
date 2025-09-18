@@ -28,7 +28,7 @@ export const Header: React.FC = () => {
     .trim()
     .split(/\s+/)
     // eslint-disable-next-line no-confusing-arrow
-    .map((word) => (word ? word[0].toUpperCase() : ""))
+    .map((word: string[]) => (word ? word[0].toUpperCase() : ""))
     .join("");
 
   const handleLogout = () => {

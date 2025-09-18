@@ -1,41 +1,20 @@
-import React /*, { useEffect } */ from "react";
-import { Header } from "@/components/Header/Header";
+import React from "react";
 import { LayoutProps } from "@/types/types";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-// Import { isTokenValid } from "@/lib/utils";
-// Import { useSelector } from "react-redux";
-// Import { RootState } from "@/redux/store";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export const DefaultLayout = ({ children }: LayoutProps) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  // Const authToken = useSelector((state: RootState) => state.auth.token);
-
-  // UseEffect(() => {
-  //   If (!isTokenValid(authToken)) {
-  //     Navigate("/login");
-  //   }
-  // }, [authToken]);
-
-  const showBackButton = location.pathname !== "/dashboard";
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <main className="flex-1 p-4 md:p-6 container mx-auto">
-        <>
-          <div className="flex items-center my-4">
-            {showBackButton && (
-              <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="mr-2">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            )}
-            <h1 className="text-lg font-semibold">{showBackButton ? "Back" : "Dashboard"}</h1>
-          </div>
-          {children}
-        </>
-      </main>
-    </div>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
   );
 };

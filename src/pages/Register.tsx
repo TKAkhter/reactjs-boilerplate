@@ -9,13 +9,13 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, Check, X, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { postAuthRegister } from "@/generated";
 import { toast } from "sonner";
 import { login } from "@/redux/slices/authSlice";
-import { save } from "@/redux/slices/userSlice";
 import { registerSchema, RegisterSchema } from "@/schemas/auth.schema";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FirebaseService } from "@/lib/firebase/firebase";
+import logger from "@/common/pino";
 
 export const Register: React.FC = () => {
   const token = useSelector((state: RootState) => state.auth.token);
@@ -23,6 +23,7 @@ export const Register: React.FC = () => {
   const dispatch = useDispatch();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const firebaseService = new FirebaseService<RegisterSchema>("users");
 
   const {
     register,
@@ -37,21 +38,24 @@ export const Register: React.FC = () => {
     const loadingToast = toast.loading("Creating account...");
 
     try {
-      const { data, error } = await postAuthRegister({ body: submittedData });
-
-      if (error) {
-        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
-        throw new Error(errorMessage);
+      const data = await firebaseService.register(submittedData.email, submittedData.password);
+      if (data) {
+        await firebaseService.add({
+          name: submittedData.name,
+          email: submittedData.email,
+          password: submittedData.password,
+          role: "user",
+        });
       }
-
-      dispatch(login(data!.data!.token));
-      dispatch(save(data!.data!.user));
+      const authToken = await data.getIdToken();
+      dispatch(login(authToken));
 
       toast.success("Account created successfully", { id: loadingToast });
       await addDelay(500);
       navigate("/dashboard");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      logger.error("Account creation failed:", error);
       toast.error(`Account creation failed: ${error.message}`, { id: loadingToast });
     } finally {
       setLoading(false);

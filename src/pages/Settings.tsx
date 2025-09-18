@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,12 +9,7 @@ import { Controller, useForm } from "react-hook-form";
 import { settingsSchema, SettingsSchema } from "@/schemas/settings.schema";
 import PhoneInput from "react-phone-number-input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
-import { toast } from "sonner";
-import { useDispatch, useSelector } from "react-redux";
-import { remove, save } from "@/redux/slices/userSlice";
-import { deleteUserById, getUserById, putUserById } from "@/generated";
-import { RootState } from "@/redux/store";
+import { AlertCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,122 +21,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { logout } from "@/redux/slices/authSlice";
-import { useNavigate } from "react-router-dom";
 
 export const Settings: React.FC = () => {
-  const userId = useSelector((state: RootState) => state.user.id);
-  const authToken = useSelector((state: RootState) => state.auth.token);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [account, setAccount] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    bio: "",
-  });
-  const [loading, setLoading] = useState(false);
-
   const {
     register,
-    handleSubmit,
     control,
     formState: { errors },
-    reset,
   } = useForm<SettingsSchema>({
     resolver: zodResolver(settingsSchema),
   });
-
-  const onSubmit = async (submittedData: SettingsSchema) => {
-    setLoading(true);
-    const loadingToast = toast.loading("Updating account...");
-    try {
-      const { data, error } = await putUserById({
-        path: { id: userId },
-        body: {
-          name: submittedData.name,
-          phoneNumber: submittedData.phone,
-          bio: submittedData.bio,
-        },
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (error) {
-        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
-        throw new Error(errorMessage);
-      }
-
-      if (data?.data) {
-        dispatch(save(data.data));
-      }
-
-      toast.success("Account updated successfully", { id: loadingToast });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      toast.error(`Account update failed: ${error.message}`, { id: loadingToast });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    const loadingToast = toast.loading("Deleting account...");
-    try {
-      const { error } = await deleteUserById({
-        path: { id: userId },
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (error) {
-        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
-        throw new Error(errorMessage);
-      }
-
-      toast.success("Account deleted successfully", { id: loadingToast });
-
-      dispatch(logout());
-      dispatch(remove());
-      navigate("/login");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      toast.error(`Account deleted failed: ${error.message}`, { id: loadingToast });
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await getUserById({
-        path: { id: userId },
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (error) {
-        const errorMessage = (error as { message?: string }).message || "An unknown error occurred";
-        throw new Error(errorMessage);
-      }
-
-      if (data?.success) {
-        const updatedAccount = {
-          name: data.data!.name,
-          email: data.data!.email,
-          phone: data.data!.phoneNumber,
-          bio: data.data!.bio,
-        };
-
-        setAccount(updatedAccount);
-        reset(updatedAccount);
-      }
-    };
-
-    fetchData().catch((error) => toast.error(error.message));
-  }, []);
 
   return (
     <div className="flex flex-col lg:flex-row justify-center items-start gap-8 p-6">
@@ -149,7 +37,7 @@ export const Settings: React.FC = () => {
         <CardHeader>
           <CardTitle>Account Settings</CardTitle>
         </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <CardContent className="space-y-4">
             {/* Name */}
             <div>
@@ -222,9 +110,7 @@ export const Settings: React.FC = () => {
             </div>
           </CardContent>
           <CardFooter className="mt-6 justify-end">
-            <Button type="submit" disabled={loading}>
-              {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Save Changes"}
-            </Button>
+            <Button type="submit">Save Changes</Button>
           </CardFooter>
         </form>
       </Card>
@@ -255,9 +141,7 @@ export const Settings: React.FC = () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteAccount}>
-                    {loading ? <Loader2 className="animate-spin h-5 w-5" /> : "Delete"}
-                  </AlertDialogAction>
+                  <AlertDialogAction>Delete</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
